@@ -380,3 +380,6 @@ input:disabled + label {
   color: rgba(0, 0, 0, 0.2);
 }
 
+canvas{
+  visibility: hidden;
+}

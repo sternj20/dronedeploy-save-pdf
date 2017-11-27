@@ -52,10 +52,11 @@ var tiles = []
 var tileList = document.querySelector('#tile-list');
 new DroneDeploy({version: 1}).then(function(dronedeploy){
   dronedeploy.Plans.getCurrentlyViewed().then(function(plan){
-    var zoom = 20;
+    var zoom = 17;
     dronedeploy.Tiles.get({planId: plan.id, layerName: 'ortho', zoom: zoom})
     .then(function(res){
       tiles = getTilesFromGeometry(plan.geometry, res.template, zoom);
+      console.log(tiles)
     });
   });
 });
@@ -69,21 +70,8 @@ function drawCanvas(data, x, y){
   img.onload = function(){
 
     ctx.drawImage(img,x,y, 320,320)
+    if (y >= 300) reallyGeneratePDF();
   }
-}
-
-//Loops through tile array, gets base 64 string of tile from proxy server, and draws to canvas
-function generatePDF() {
-  let x = 0;
-  let y = 0
-  console.log('drawing tiles onto canvas')
-  // Loop through array of tiles returned from API request, for each tile send AJAX get request to my proxy server
-  tiles.forEach(function(element){
-    $.get( `https://pure-gorge-83413.herokuapp.com/?url=${element}`, function( data ) {
-      drawCanvas(data, x, y)
-      x += 32
-    });
-  })
 }
 
 //Actually generates the PDF
@@ -100,13 +88,26 @@ function reallyGeneratePDF(){
     }
   });
 }
+//Loops through tile array, gets base 64 string of tile from proxy server, and draws to canvas
+function generatePDF() {
+  let x = 0;
+  let y = 0
+  console.log('drawing tiles onto canvas')
+  // Loop through array of tiles returned from API request, for each tile send AJAX get request to my proxy server
+  tiles.forEach(function(element, index){
+    $.get( `https://pure-gorge-83413.herokuapp.com/?url=${element}`, function( data ) {
+      drawCanvas(data, x, y)
+      y += 300
+    })
+  })
+}
+
+
 
 // onClick for generate PDF button
 var generatePDFButton = document.getElementById("generatePDF")
 generatePDFButton.addEventListener('click', generatePDF)
 
-var reallyGeneratePDFButton = document.getElementById("reallyGeneratePDFButton");
-reallyGeneratePDFButton.addEventListener('click', reallyGeneratePDF);
 
 
 
