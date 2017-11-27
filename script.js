@@ -1,17 +1,3 @@
-
-/*
-
-1. Get tiles from Drone Deploy console
-2. Loop through array of tiles returned from API request, for each tile send AJAX get request to my proxy server
-3. Get what is returned which is what should be base 64 representation of that image
-4. Add new image with that base64 src to the canvas
-5. Generate PDF from canvas
-
-
-additional steps between 4 and 5 are additional css to make sure that tile layers look correct
-
-*/
-
 function getTilesFromGeometry(geometry, template, zoom){
   function long2tile(lon,zoom) {
     return (Math.floor((lon+180)/360*Math.pow(2,zoom)));
@@ -48,15 +34,16 @@ function getTilesFromGeometry(geometry, template, zoom){
   return tiles;
 }
 
-var tiles = []
+var tiles = [];
 var tileList = document.querySelector('#tile-list');
+var mapName;
 new DroneDeploy({version: 1}).then(function(dronedeploy){
   dronedeploy.Plans.getCurrentlyViewed().then(function(plan){
+    mapName = `${plan.name}-map-${plan.username}`;
     var zoom = 17;
     dronedeploy.Tiles.get({planId: plan.id, layerName: 'ortho', zoom: zoom})
     .then(function(res){
       tiles = getTilesFromGeometry(plan.geometry, res.template, zoom);
-      console.log(tiles)
     });
   });
 });
@@ -76,20 +63,27 @@ function drawCanvas(data, x, y){
 
 //Actually generates the PDF
 function reallyGeneratePDF(){
+
   html2canvas(document.getElementById("newCanvas"), {
     logging:true,
+    onclone: function(doc){
+      hiddenDiv = doc.getElementById('newCanvas');
+      hiddenDiv.style.display = 'block';
+    },
     onrendered: function(canvas) {
       var imgData = canvas.toDataURL(
         'image/png');              
       var doc = new jsPDF('p', 'mm');
       doc.addImage(imgData, 'png', 10, 10);
       console.log(imgData)
-      doc.save('sample-file=map.pdf');
+      doc.save(`${mapName}.pdf`);
+      document.getElementById('generatePDF').innerText = 'Generate PDF'
     }
   });
 }
 //Loops through tile array, gets base 64 string of tile from proxy server, and draws to canvas
 function generatePDF() {
+  document.getElementById('generatePDF').innerText = 'Generating PDF...'
   let x = 0;
   let y = 0
   console.log('drawing tiles onto canvas')
@@ -107,8 +101,6 @@ function generatePDF() {
 // onClick for generate PDF button
 var generatePDFButton = document.getElementById("generatePDF")
 generatePDFButton.addEventListener('click', generatePDF)
-
-
 
 
 
