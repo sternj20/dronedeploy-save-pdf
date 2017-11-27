@@ -3,23 +3,23 @@
 <head>
   <title>Document</title>
   <style>
-    #tile-list{
-      display: flex;
-      flex-direction: row;
-      flex: 1 1 0%;
-    }
-    img{
-      width: 65px;
-      height: 65px;
-    }
-  </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="./styles.css">
+  #tile-list{
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 0%;
+  }
+  img{
+    width: 65px;
+    height: 65px;
+  }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="./styles.css">
 </head>
 <body>
-        <button id="generatePDF">Generate PDF</button>
-        PDF Preview
-        <canvas id="newCanvas" width="1000px" height="1000px"></canvas>
+  <button id="generatePDF">Generate PDF</button>
+  PDF Preview
+  <canvas id="newCanvas" width="1000px" height="1000px"></canvas>
 
   <div class="container expand-container">
     <div class="row expand-row">
@@ -34,10 +34,10 @@
 
     <div class="expand-section" style="display: none;">
       <div class="row">
+      </div>
     </div>
-  </div>
-  <!-- JSPDF CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+    <!-- JSPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
+    <script src="script.js"></script>
+  </body>
+  </html>
